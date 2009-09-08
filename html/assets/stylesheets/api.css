@@ -84,17 +84,13 @@ code {
   overflow-x: auto;
 }
 
-.page-content {
-  width: 835px;
-}
-  
 
 /* MASTHEAD */
 
 .masthead {
   margin-top: 50px;
   height: 75px;
-  padding: 1px 0 1px 60px;
+  padding: 1px 0;
   background: url(../images/header-stripe-small.png) repeat-x;
 }
 
@@ -127,8 +123,8 @@ ul.breadcrumbs {
 /* PAGE CONTENT */
 
 .page-content {
-  width: 955px;
-  margin: 30px auto 0;
+  width: 715px;
+  margin: 30px 0 0;
 }
 
   .page-content h2.page-title {
@@ -258,7 +254,7 @@ ul.breadcrumbs {
     }
     
   .section-content {
-    width: 835px;
+    width: 595px;
     float: left;
   }
 
@@ -585,6 +581,10 @@ p.related-to {
     padding: 0;
     overflow-y: scroll;
     overflow-x: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 239px;
   }
   
 input.ghosted {
@@ -596,35 +596,44 @@ input.ghosted {
 /* FOOTER */
 
 #footer {
-  color: #999;
+  color: #bbb;
+  width: 595px;
+  margin-left: 120px;
+  margin-top: 30px;
 }
+
+  #footer .content {
+    border-top: 1px solid #ccc;
+    margin: 0;
+    padding: 30px 0;
+  }
 
   #footer a,
   #footer a:link {
-    color: #666;
+    color: #999;
   }
 
   .cc {
     float: left;
-    width: 420px;
+    width: 360px;
   }
   
     .cc span {
       float: left;
-      width: 120px;
+      width: 110px;
+      margin-right: 10px;
       text-align: center;
       padding-top: 6px;
     }
     
     .cc p {
       float: left;
-      width: 300px;
+      width: 180px;
     }
     
   .credits {
     float: left;
-    margin-right: 60px;
-    width: 355px;
+    width: 235px;
   }
   
     
