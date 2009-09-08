@@ -94,7 +94,7 @@ code {
 .masthead {
   margin-top: 50px;
   height: 75px;
-  padding: 1px 0;
+  padding: 1px 0 1px 60px;
   background: url(../images/header-stripe-small.png) repeat-x;
 }
 
@@ -452,40 +452,18 @@ p.related-to {
   font-size: 13px;
 }
 
-#flap {
-  position: absolute;
-  left: 240px;
-  bottom: 10px;
-  cursor: pointer;
+#sidebar form.search-ribbon {
+  margin: 0;
+  height: 24px;
+  border-right: 1px solid #636363;
+  padding: 4px 0 3px;
+  border-bottom: 1px solid #587e93;
+  background: url(../images/search-background.png) repeat-x 0 0;
+  text-align: center;
 }
 
-  #sidebar .sidebar-tabs {
-    margin: 0 -1px 0 0;
-  }
-  
-    .sidebar-tabs li {
-      list-style-type: none;
-    }
-    
-      .sidebar-tabs li a {
-        display: block;
-        float: left;
-        width: 119px;
-        height: 24px;
-        line-height: 24px;
-        border-right: 1px solid #636363;
-        text-align: center;
-        background: url(../images/button-background-inactive.png) repeat-x 0 0;
-        text-decoration: none;
-        color: #464545;
-      }
-      
-        .sidebar-tabs li a.active {
-          color: #2d5972;
-          background: url(../images/button-background-active.png) repeat-x 0 0;
-        }
-  
-  
+/* Keep these around for `Control.Tabs`. */
+.sidebar-tabs { display: none; }
   
 .menu-items ul {
   margin: 0;
@@ -506,8 +484,6 @@ p.related-to {
       padding-left: 48px;
       background-position: 26px 50%;
     }
-    
-
 
     .menu-item a,
     .menu-item a:link {
@@ -586,7 +562,7 @@ p.related-to {
   
 #menu_pane {
   position: absolute;
-  top: 24px;
+  top: 32px;
   bottom: 0;
   left: 0;
   width: 239px;
@@ -599,29 +575,23 @@ p.related-to {
   width: 239px;
   border-right: 1px solid #636363;
   position: absolute;
-  top: 24px;
+  top: 32px;
   bottom: 0;
   left: 0;
 }
 
-  #search_pane form {
-    height: 24px;
-    padding: 4px 10px;
-    text-align: center;
-    background: url(../images/search-background.png) repeat-x 0 0;
-  }
-  
   #search_results {
     margin: 0;
     padding: 0;
-    position: absolute;
-    top: 32px;
-    bottom: 0;
-    left: 0;
-    width: 239px;
     overflow-y: scroll;
     overflow-x: hidden;
   }
+  
+input.ghosted {
+  font-style: italic;
+  color: #aaa;
+}
+
 
 /* FOOTER */
 

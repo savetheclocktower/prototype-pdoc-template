@@ -164,7 +164,6 @@ Object.extend(PDoc, {
 });
 
 Object.extend(PDoc.Sidebar, {
-  
   getActiveTab: function() {
     var activeTab = $('sidebar_tabs').down('.active');
     if (!activeTab) return null;
@@ -182,21 +181,24 @@ Object.extend(PDoc.Sidebar, {
       searchValue: $('search').getValue()
     });
     
-    return state.toJSON();
+    return escape(state.toJSON());
   },
   
   // Restore the tree to a certain point based on a cookie.
   restore: function(state) {
-    state = JSON.parse(state);
-    
-    PDoc.Sidebar.Tabs.setActiveTab(state.activeTab);
-    var filterer = $('search').retrieve('filterer');    
-    filterer.setSearchValue(state.searchValue);
-    
-    (function() {
-      $('menu_pane').scrollTop = state.menuScrollOffset;
-      $('search_results').scrollTop = state.searchScrollOffset;
-    }).defer();
+    try {
+      state = unescape(state).evalJSON();
+      var filterer = $('search').retrieve('filterer');    
+      filterer.setSearchValue(state.searchValue);
+
+      (function() {
+        $('menu_pane').scrollTop = state.menuScrollOffset;
+        $('search_results').scrollTop = state.searchScrollOffset;
+      }).defer();
+    } catch(error) {
+      console.log(error);
+      if (!(error instanceof SyntaxError)) throw error;
+    }
   }
 });
 
@@ -252,6 +254,7 @@ PDoc.Sidebar.Filterer = Class.create({
     var value = $F(this.element).strip().toLowerCase();    
     if (value === '') {
       this.emptyResults();
+      this.hideResults();
       return;
     }
     
@@ -261,7 +264,10 @@ PDoc.Sidebar.Filterer = Class.create({
   
   setSearchValue: function(value) {
     this.element.setValue(value);
-    if (value.strip() === "") return;
+    if (value.strip() === "") {
+      PDoc.Sidebar.Tabs.setActiveTab(0);
+      return;
+    }
     this.buildResults(this.findURLs(value));
   },
   
@@ -301,13 +307,15 @@ PDoc.Sidebar.Filterer = Class.create({
   },
   
   hideResults: function() {
-    this.resultsElement.hide();
+    PDoc.Sidebar.Tabs.setActiveTab(0);    
+    //this.resultsElement.hide();
     document.stopObserving('keydown', this.observers.keydown);
     document.stopObserving('keyup', this.observers.keyup);
   },
   
   showResults: function() {
-    this.resultsElement.show();
+    PDoc.Sidebar.Tabs.setActiveTab(1);
+    //this.resultsElement.show();
     document.stopObserving('keydown', this.observers.keydown);
     document.stopObserving('keyup', this.observers.keyup);
     document.observe('keydown', this.observers.keydown);
@@ -404,10 +412,85 @@ Object.extend(PDoc.Sidebar.Filterer, {
 });
 
 
+Form.GhostedField = Class.create({
+  initialize: function(element, title, options) {
+    options = options || {};
+    
+    this.element = $(element);
+    this.title = title;
+    
+    this.isGhosted = true;
+    
+    if (options.cloak) {
+      
+      // Wrap the native getValue function so that it never returns the
+      // ghosted value. This is optional because it presumes the ghosted
+      // value isn't valid input for the field.
+      this.element.getValue = this.element.getValue.wrap(this.wrappedGetValue.bind(this));      
+    }
+    
+    this.addObservers();
+    
+    this.onBlur();
+  },
+  
+  wrappedGetValue: function($proceed) {
+    var value = $proceed();
+    return value === this.title ? "" : value;
+  },
+  
+  addObservers: function() {
+    this.element.observe('focus', this.onFocus.bind(this));
+    this.element.observe('blur',  this.onBlur.bind(this));
+    
+    var form = this.element.up('form');
+    if (form) {
+      form.observe('submit', this.onSubmit.bind(this));
+    }
+    
+    // Firefox's bfcache means that form fields need to be re-initialized
+    // when you hit the "back" button to return to the page.
+    if (Prototype.Browser.Gecko) {
+      window.addEventListener('pageshow', this.onBlur.bind(this), false);
+    }
+  },
+  
+  onFocus: function() {
+    if (this.isGhosted) {
+      this.element.setValue('');
+      this.setGhosted(false);
+    }
+  },
+  
+  onBlur: function() {
+    var value = this.element.getValue();
+    if (value.blank() || value == this.title) {
+      this.setGhosted(true);
+    } else {
+      this.setGhosted(false);
+    }
+  },
+  
+  setGhosted: function(isGhosted) {
+    this.isGhosted = isGhosted;
+    this.element[isGhosted ? 'addClassName' : 'removeClassName']('ghosted');
+    if (isGhosted) {
+      this.element.setValue(this.title);
+    }    
+  },
+
+  // Hook into the enclosing form's `onsubmit` event so that we clear any
+  // ghosted text before the form is sent.
+  onSubmit: function() {
+    if (this.isGhosted) {
+      this.element.setValue('');
+    }
+  }
+});
+
 
 document.observe('hash:changed', PDoc.highlightSelected.bind(PDoc));
 document.observe('dom:loaded', function() {
-
   PDoc.Sidebar.Tabs = new Control.Tabs($('sidebar_tabs'));
   
   var searchField = $('search');
@@ -420,23 +503,20 @@ document.observe('dom:loaded', function() {
     searchField.store('filterer', filterer);
   }  
   
-  // Focus the search box when the search pane becomes active.
-  var searchTab = $('sidebar_tabs').down('a[href$="search_pane"]');
-  if (searchTab) {
-    searchTab.observe('click', function() { $('search').focus(); });    
-  }
-  
   // Prevent horizontal scrolling in scrollable sidebar areas.
   $$('.scrollable').invoke('observe', 'scroll', function() {
     this.scrollLeft = 0;
   });
   
-  var sidebarState = Cookie.get('sidebar-state');
+  var sidebarState = Cookie.get('sidebar_state');
   if (sidebarState) {
     PDoc.Sidebar.restore(sidebarState);
   }
+  
+  new Form.GhostedField(searchField, searchField.getAttribute('title'), 
+    { cloak: true });
 });
 
 Event.observe(window, 'unload', function() {
-  Cookie.set('sidebar-state', PDoc.Sidebar.serialize());  
+  Cookie.set('sidebar_state', PDoc.Sidebar.serialize());
 });
