@@ -17,6 +17,33 @@
   </script>
 </head>
   <body>
+
+    <div id="sidebar">
+      <%= img_tag('menu-flap.png', { :id => 'flap' }) %>
+      <ul id="sidebar_tabs" class="sidebar-tabs clearfix">
+        <li>
+          <a href="#menu_pane">Menu</a>
+        </li>
+        <li>
+          <a href="#search_pane">Search</a>
+        </li>
+      </ul> <!-- .sidebar-tabs -->
+      <div class="sidebar-pane scrollable" id="menu_pane">
+        <ul id="api_menu" class="menu-items">
+          <% @root.sections.each do |section| %>
+            <%= menu(section) %>
+          <% end %>
+        </ul> <!--- #api_menu =-->
+      </div> <!-- .sidebar-pane -->
+      <div class="sidebar-pane" id="search_pane">
+        <form class="search-ribbon">
+          <label><span class="hidden">Search</span> <input type="text" id="search" size="20" /></label>
+        </form>
+        <ul id="search_results" class="search-results menu-items scrollable"></ul>
+      </div> <!-- .sidebar-pane -->
+    </div> <!-- #sidebar -->
+
+
     <div id="page">
       <div class="masthead">
         <div class="content">
@@ -25,30 +52,6 @@
           </h1>
         </div> <!-- .content -->
       </div> <!-- .masthead -->
-      <div id="sidebar" style="left: -240px">
-        <%= img_tag('menu-flap.png', { :id => 'flap' }) %>
-        <ul id="sidebar_tabs" class="sidebar-tabs clearfix">
-          <li>
-            <a href="#menu_pane">Menu</a>
-          </li>
-          <li>
-            <a href="#search_pane">Search</a>
-          </li>
-        </ul> <!-- .sidebar-tabs -->
-        <div class="sidebar-pane scrollable" id="menu_pane">
-          <ul id="api_menu" class="menu-items">
-            <% @root.sections.each do |section| %>
-              <%= menu(section) %>
-            <% end %>
-          </ul> <!--- #api_menu =-->
-        </div> <!-- .sidebar-pane -->
-        <div class="sidebar-pane" id="search_pane">
-          <form class="search-ribbon">
-            <label><span class="hidden">Search</span> <input type="text" id="search" size="20" /></label>
-          </form>
-          <ul id="search_results" class="search-results menu-items scrollable"></ul>
-        </div> <!-- .sidebar-pane -->
-      </div> <!-- #sidebar -->
       <div id="main" class="page-content">
         
         <%= @content_for_layout %>

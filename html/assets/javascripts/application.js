@@ -157,25 +157,13 @@ Object.extend(PDoc, {
     (function() {
       var frameOffset = frame.viewportOffset(frame);
       if (frameOffset.top < 0) {
-        window.scrollBy(0, frameOffset.top - 10);
+        $('page').scrollTop += (frameOffset.top - 10);
       }    
     }).defer();
   }
 });
 
 Object.extend(PDoc.Sidebar, {
-  toggle: function(shouldBeOpen) {
-    if (Object.isUndefined(shouldBeOpen))
-      shouldBeOpen = !PDoc.Sidebar.isOpen();
-    $('sidebar').setStyle({
-      left: (shouldBeOpen ? '0' : '-240') + 'px'
-    });
-  },
-  
-  isOpen: function() {
-    var left = $('sidebar').getStyle('left');
-    return (window.parseInt(left, 10) === 0);
-  },
   
   getActiveTab: function() {
     var activeTab = $('sidebar_tabs').down('.active');
@@ -188,7 +176,6 @@ Object.extend(PDoc.Sidebar, {
   // Remember the state of the sidebar so it can be restored on the next page.
   serialize: function() {
     var state = $H({
-      isOpen: PDoc.Sidebar.isOpen(),
       activeTab: PDoc.Sidebar.getActiveTab(),
       menuScrollOffset: $('menu_pane').scrollTop,
       searchScrollOffset: $('search_results').scrollTop,
@@ -208,8 +195,7 @@ Object.extend(PDoc.Sidebar, {
     
     (function() {
       $('menu_pane').scrollTop = state.menuScrollOffset;
-      $('search_results').scrollTop = state.searchScrollOffset;    
-      PDoc.Sidebar.toggle(state.isOpen);
+      $('search_results').scrollTop = state.searchScrollOffset;
     }).defer();
   }
 });
@@ -443,10 +429,6 @@ document.observe('dom:loaded', function() {
   // Prevent horizontal scrolling in scrollable sidebar areas.
   $$('.scrollable').invoke('observe', 'scroll', function() {
     this.scrollLeft = 0;
-  });
-  
-  $('flap').observe('click', function() {
-    PDoc.Sidebar.toggle();
   });
   
   var sidebarState = Cookie.get('sidebar-state');

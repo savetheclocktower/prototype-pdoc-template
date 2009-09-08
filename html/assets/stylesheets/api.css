@@ -69,9 +69,23 @@ code {
 }
 
 .content {
-  width: 835px;
   padding-left: 120px;
   margin: 0 auto;
+}
+
+#page {
+  margin: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 241px;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+
+.page-content {
+  width: 835px;
 }
   
 
