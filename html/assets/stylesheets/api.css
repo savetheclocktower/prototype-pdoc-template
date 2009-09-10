@@ -45,6 +45,14 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
+pre {
+ white-space: pre-wrap;       /* CSS 3                  */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999    */
+ white-space: -pre-wrap;      /* Opera 4-6              */
+ white-space: -o-pre-wrap;    /* Opera 7                */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
 a img {
   border: 0;
 }
@@ -186,6 +194,7 @@ ul.breadcrumbs {
       background-color: transparent;
       border: 0;
       padding: 0;
+      line-height: 100%;
     }
 
   
@@ -288,11 +297,10 @@ ul.method-list {
 }
 
   ul.method-list li {
-    margin-top: 0;
     float: left;
-    margin-right: 5px;
-    margin-left: 0;
+    margin: 0 5px 3px 0;
     list-style-type: none;
+    padding-bottom: 0;
   }
   
     ul.method-list li a,
@@ -314,6 +322,10 @@ ul.method-details-list {
       margin: 0 0 0.6em;
       line-height: 90%;
     }
+    
+    .method-description p {
+      margin: 0.8em 0;
+    }
   
   
  .method-description .method-permalink a {
@@ -328,6 +340,31 @@ h4.inherited {
   font-size: 15px;
   font-style: italic;
 }
+
+pre.syntax {
+  margin-bottom: 5px;
+}
+
+ul.argument-list {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+}
+
+  ul.argument-list li {
+    line-height: 140%;
+    margin-top: 0px;
+    margin-bottom: 5px;
+  }
+  
+    ul.argument-list li code {
+      font-size: 11px;
+    }
+    
+    ul.argument-list .argument-name {
+      background-color: #eeffee;
+      border-color: #6b6;
+    }
   
   
 /* SECTION ICONS */
@@ -401,7 +438,7 @@ p.alias,
 p.related-to {
   font-size: 11px;
   line-height: 14px;
-  padding: 5px 5px 5px 60px;
+  padding: 5px 20px 5px 60px;
   background-repeat: no-repeat;
   background-position: 20px 50%;
   border: 1px solid #000;
@@ -480,6 +517,18 @@ p.related-to {
       padding-left: 48px;
       background-position: 26px 50%;
     }
+    
+      .menu-items ul ul ul .menu-item a {
+        padding-left: 58px;
+        background-position: 36px 50%;
+      }
+      
+        .menu-items ul ul ul ul .menu-item a {
+          padding-left: 68px;
+          background-position: 46px 50%;
+        }
+      
+      
 
     .menu-item a,
     .menu-item a:link {
@@ -586,6 +635,11 @@ p.related-to {
     bottom: 0;
     width: 239px;
   }
+  
+#search {
+  width: 200px;
+  padding: 2px 3px;
+}
   
 input.ghosted {
   font-style: italic;
