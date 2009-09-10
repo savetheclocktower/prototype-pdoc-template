@@ -317,8 +317,8 @@ PDoc.Sidebar.Filterer = Class.create({
     PDoc.Sidebar.Tabs.setActiveTab(1);
     //this.resultsElement.show();
     document.stopObserving('keydown', this.observers.keydown);
-    document.stopObserving('keyup', this.observers.keyup);
-    document.observe('keydown', this.observers.keydown);
+    this.element.stopObserving('keyup', this.observers.keyup);
+    this.element.observe('keydown', this.observers.keydown);
     document.observe('keyup', this.observers.keyup);
   },
   
@@ -337,11 +337,14 @@ PDoc.Sidebar.Filterer = Class.create({
       return;
       
     event.stop();
-    
+
     if (event.keyCode === Event.KEY_RETURN) {
       // Follow the highlighted item, unless there is none.
-      if (!highlighted) return;
-      window.location.href = highlighted.down('a').href;
+      if (!this.highlighted) return;
+      var a = this.highlighted.down('a');
+      if (a) {
+        window.location.href = a.href;
+      }
     } else if ([Event.KEY_UP, Event.KEY_DOWN].include(event.keyCode)) {
       // Is an arrow key.
       var direction = (Event.KEY_DOWN === event.keyCode) ? 1 : -1;
